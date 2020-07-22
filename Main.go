@@ -9,5 +9,6 @@ import (
 
 func main() {
 	router := mux.NewRouter().StrictSlash(true)
+	HandleRoutes(router)
 	log.Fatal(http.ListenAndServe(":8081", router))
 }
