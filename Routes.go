@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"bank-api/account"
+	"bank-api/login"
 
 	"github.com/gorilla/mux"
 )
@@ -33,5 +34,6 @@ func setupAccountRoutes(router *mux.Router) {
 func setupTransferRoutes(mux *mux.Router) {
 }
 
-func setupLoginRoutes(mux *mux.Router) {
+func setupLoginRoutes(router *mux.Router) {
+	router.HandleFunc("/login", login.Login).Methods("POST")
 }
