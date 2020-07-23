@@ -6,6 +6,7 @@ import (
 
 	"bank-api/account"
 	"bank-api/login"
+	"bank-api/transfer"
 
 	"github.com/gorilla/mux"
 )
@@ -31,7 +32,9 @@ func setupAccountRoutes(router *mux.Router) {
 	router.HandleFunc("/accounts", account.NewAccount).Methods("POST")
 }
 
-func setupTransferRoutes(mux *mux.Router) {
+func setupTransferRoutes(router *mux.Router) {
+	router.HandleFunc("/transfers", transfer.AllTransfers).Methods("GET")
+	router.HandleFunc("/transfers", transfer.NewTransfer).Methods("POST")
 }
 
 func setupLoginRoutes(router *mux.Router) {
