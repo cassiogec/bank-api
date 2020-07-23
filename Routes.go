@@ -26,7 +26,7 @@ func homepage(w http.ResponseWriter, r *http.Request) {
 
 func setupAccountRoutes(router *mux.Router) {
 	router.HandleFunc("/accounts", account.AllAccounts).Methods("GET")
-	router.HandleFunc("/user/{account_id}/balance", account.AccountBalance).Methods("GET")
+	router.HandleFunc("/accounts/{account_id}/balance", account.AccountBalance).Methods("GET")
 	router.HandleFunc("/accounts", account.NewAccount).Methods("POST")
 }
 
