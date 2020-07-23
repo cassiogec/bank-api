@@ -7,14 +7,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type Handlers struct{}
-
 func main() {
-	myRouter := mux.NewRouter().StrictSlash(true)
-	handleRoutes(myRouter)
-	log.Fatal(http.ListenAndServe(":8081", myRouter))
-}
-
-func handleRoutes(mux *mux.Router) {
-
+	router := mux.NewRouter().StrictSlash(true)
+	SetupRoutes(router)
+	log.Fatal(http.ListenAndServe(":8081", router))
 }
