@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"bank-api/account"
-	"bank-api/login"
-	"bank-api/transfer"
+	"bank-api/controllers"
 
 	"github.com/gorilla/mux"
 )
@@ -27,16 +25,16 @@ func homepage(w http.ResponseWriter, r *http.Request) {
 }
 
 func setupAccountRoutes(router *mux.Router) {
-	router.HandleFunc("/accounts", account.AllAccounts).Methods("GET")
-	router.HandleFunc("/accounts/{account_id}/balance", account.AccountBalance).Methods("GET")
-	router.HandleFunc("/accounts", account.NewAccount).Methods("POST")
+	router.HandleFunc("/accounts", controllers.AllAccounts).Methods("GET")
+	router.HandleFunc("/accounts/{account_id}/balance", controllers.AccountBalance).Methods("GET")
+	router.HandleFunc("/accounts", controllers.NewAccount).Methods("POST")
 }
 
 func setupTransferRoutes(router *mux.Router) {
-	router.HandleFunc("/transfers", transfer.AllTransfers).Methods("GET")
-	router.HandleFunc("/transfers", transfer.NewTransfer).Methods("POST")
+	router.HandleFunc("/transfers", controllers.AllTransfers).Methods("GET")
+	router.HandleFunc("/transfers", controllers.NewTransfer).Methods("POST")
 }
 
 func setupLoginRoutes(router *mux.Router) {
-	router.HandleFunc("/login", login.Login).Methods("POST")
+	router.HandleFunc("/login", controllers.Login).Methods("POST")
 }

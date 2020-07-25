@@ -1,4 +1,4 @@
-package transfer
+package controllers
 
 import (
 	"net/http"
