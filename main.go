@@ -2,13 +2,14 @@ package main
 
 import (
 	"log"
-	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	router := mux.NewRouter().StrictSlash(true)
-	SetupRoutes(router)
-	log.Fatal(http.ListenAndServe(":8080", router))
+	var err error
+	err = godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error getting env, %v", err)
+	}
 }
