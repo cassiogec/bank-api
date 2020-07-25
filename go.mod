@@ -1,4 +1,4 @@
-module bank-api
+module github.com/cassiogec/bank-api
 
 go 1.14
 

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"bank-api/controllers"
+	"github.com/cassiogec/bank-api/controllers"
 
 	"github.com/gorilla/mux"
 )
