@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -24,6 +25,27 @@ func (a *Account) FindAllAccounts(db *gorm.DB) (*[]Account, error) {
 	}
 	SanitizeAccounts(&accounts)
 	return &accounts, err
+}
+
+func (a *Account) FindAccountBalanceByID(db *gorm.DB, id uint64) (float64, error) {
+	a, err := a.FindAccountByID(db, id)
+	if err != nil {
+		return 0, err
+	}
+	return a.Balance, nil
+}
+
+func (a *Account) FindAccountByID(db *gorm.DB, id uint64) (*Account, error) {
+	var err error
+	err = db.Debug().Model(Account{}).Where("id = ?", id).Take(&a).Error
+	if gorm.IsRecordNotFoundError(err) {
+		return &Account{}, errors.New("Account Not Found")
+	}
+	if err != nil {
+		return &Account{}, err
+	}
+	a.SanitizeAccount()
+	return a, nil
 }
 
 func SanitizeAccounts(accounts *[]Account) {

@@ -2,9 +2,11 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/cassiogec/bank-api/models"
 	"github.com/cassiogec/bank-api/responses"
+	"github.com/gorilla/mux"
 )
 
 func (server *Server) AllAccounts(w http.ResponseWriter, r *http.Request) {
@@ -17,8 +19,20 @@ func (server *Server) AllAccounts(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusOK, accounts)
 }
 
-func AccountBalance(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
+func (server *Server) AccountBalance(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.ParseUint(vars["account_id"], 10, 32)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+	account := models.Account{}
+	balance, err := account.FindAccountBalanceByID(server.DB, uint64(id))
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+	responses.JSON(w, http.StatusOK, balance)
 }
 
 func NewAccount(w http.ResponseWriter, r *http.Request) {
