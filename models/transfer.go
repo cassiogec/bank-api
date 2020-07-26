@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -33,4 +34,58 @@ func SanitizeTransferAccounts(transfers *[]Transfer) {
 		t.Account_origin.SanitizeAccount()
 		(*transfers)[i] = t
 	}
+}
+
+func (t *Transfer) Prepare(account_origin_id uint64) {
+	t.ID = 0
+	t.Account_origin_id = account_origin_id
+	t.Account_origin = Account{}
+	t.Account_destination = Account{}
+	t.CreatedAt = time.Now()
+}
+
+func (t *Transfer) Validate(db *gorm.DB) error {
+	if t.Account_destination_id < 1 {
+		return errors.New("Required Account Destination ID")
+	}
+	if t.Account_destination_id == t.Account_origin_id {
+		return errors.New("Origin and Destination Accouts should differ")
+	}
+	if t.Amount < 1 {
+		return errors.New("Amount should be bigger then 0")
+	}
+	if _, err := t.Account_destination.FindAccountByID(db, t.Account_destination_id); err != nil {
+		return err
+	}
+	if _, err := t.Account_origin.FindAccountByID(db, t.Account_origin_id); err != nil {
+		return err
+	}
+	if t.Account_origin.Balance-t.Amount < 0 {
+		return errors.New("Insufficient balance")
+	}
+	return nil
+}
+
+func (t *Transfer) SaveTransfer(db *gorm.DB) (*Transfer, error) {
+	var err error
+	tx := db.Begin()
+	err = t.Account_origin.WithdrawFromBalance(db, t.Amount)
+	if err != nil {
+		tx.Rollback()
+		return &Transfer{}, err
+	}
+	err = t.Account_destination.DepositOnBalance(db, t.Amount)
+	if err != nil {
+		tx.Rollback()
+		return &Transfer{}, err
+	}
+	err = db.Debug().Model(&Transfer{}).Create(&t).Error
+	if err != nil {
+		tx.Rollback()
+		return &Transfer{}, err
+	}
+	t.Account_origin.SanitizeAccount()
+	t.Account_destination.SanitizeAccount()
+	tx.Commit()
+	return t, nil
 }
