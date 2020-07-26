@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 
@@ -35,6 +38,28 @@ func (server *Server) AccountBalance(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusOK, balance)
 }
 
-func NewAccount(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
+func (server *Server) NewAccount(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+	}
+	account := models.Account{}
+	err = json.Unmarshal(body, &account)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+	account.Prepare()
+	err = account.Validate("")
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+	accountCreated, err := account.SaveAccount(server.DB)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+	w.Header().Set("Location", fmt.Sprintf("%s%s/%d", r.Host, r.RequestURI, accountCreated.ID))
+	responses.JSON(w, http.StatusCreated, accountCreated)
 }

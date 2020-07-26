@@ -2,6 +2,9 @@ package models
 
 import (
 	"errors"
+	"html"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -57,4 +60,94 @@ func SanitizeAccounts(accounts *[]Account) {
 
 func (a *Account) SanitizeAccount() {
 	a.Secret = ""
+}
+
+func (a *Account) Prepare() {
+	a.ID = 0
+	a.Name = html.EscapeString(strings.TrimSpace(a.Name))
+	a.CPF = html.EscapeString(strings.TrimSpace(a.CPF))
+	a.Balance = 10
+	a.CreatedAt = time.Now()
+}
+
+func (a *Account) Validate(action string) error {
+	switch strings.ToLower(action) {
+	case "login":
+		if err := a.ValidateSecret(); err != nil {
+			return err
+		}
+		if err := a.ValidateCPF(); err != nil {
+			return err
+		}
+		return nil
+
+	default:
+		if err := a.ValidateName(); err != nil {
+			return err
+		}
+		if err := a.ValidateSecret(); err != nil {
+			return err
+		}
+		if err := a.ValidateCPF(); err != nil {
+			return err
+		}
+		return nil
+	}
+}
+
+func (a *Account) ValidateName() error {
+	if a.Name == "" {
+		return errors.New("Required Name")
+	}
+	return nil
+}
+
+func (a *Account) ValidateSecret() error {
+	if a.Secret == "" {
+		return errors.New("Required Secret")
+	}
+	return nil
+}
+
+func (a *Account) ValidateCPF() error {
+	if a.CPF == "" {
+		return errors.New("Required CPF")
+	}
+	if len(a.CPF) != 11 {
+		return errors.New("Invalid CPF")
+	}
+	if _, err := strconv.Atoi(a.CPF); err != nil {
+		return errors.New("Invalid CPF")
+	}
+	return nil
+}
+
+func (a *Account) SaveAccount(db *gorm.DB) (*Account, error) {
+	var err error
+	if err := a.ValidateUniqueCPF(db); err != nil {
+		return &Account{}, err
+	}
+	err = db.Debug().Create(&a).Error
+	if err != nil {
+		return &Account{}, err
+	}
+	a.SanitizeAccount()
+	return a, nil
+}
+
+func (a *Account) ValidateUniqueCPF(db *gorm.DB) error {
+	accountFound, _ := a.FindAccountByCPF(db, a.CPF)
+	if accountFound.ID != 0 {
+		return errors.New("There is already an account with the given CPF")
+	}
+	return nil
+}
+
+func (a *Account) FindAccountByCPF(db *gorm.DB, cpf string) (*Account, error) {
+	var err error
+	err = db.Debug().Model(Account{}).Where("cpf = ?", cpf).Take(&a).Error
+	if err != nil {
+		return &Account{}, err
+	}
+	return a, nil
 }
