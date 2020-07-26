@@ -165,3 +165,7 @@ func (a *Account) BeforeSave() error {
 func Hash(secret string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(secret), bcrypt.DefaultCost)
 }
+
+func VerifySecret(hashedSecret, secret string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedSecret), []byte(secret))
+}
