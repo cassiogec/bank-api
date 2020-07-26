@@ -17,4 +17,5 @@ func (s *Server) initializeRoutes() {
 
 	//Transfers routes
 	s.Router.HandleFunc("/transfers", middlewares.SetMiddlewareJSON(s.AllTransfers)).Methods("GET")
+	s.Router.HandleFunc("/transfers", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.NewTransfer))).Methods("POST")
 }
