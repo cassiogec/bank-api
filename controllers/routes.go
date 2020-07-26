@@ -11,4 +11,7 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/accounts", middlewares.SetMiddlewareJSON(s.AllAccounts)).Methods("GET")
 	s.Router.HandleFunc("/accounts/{account_id}/balance", middlewares.SetMiddlewareJSON(s.AccountBalance)).Methods("GET")
 	s.Router.HandleFunc("/accounts", middlewares.SetMiddlewareJSON(s.NewAccount)).Methods("POST")
+
+	// Login Route
+	s.Router.HandleFunc("/login", middlewares.SetMiddlewareJSON(s.Login)).Methods("POST")
 }
