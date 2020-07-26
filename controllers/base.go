@@ -3,7 +3,9 @@ package controllers
 import (
 	"fmt"
 	"log"
+	"net/http"
 
+	"github.com/cassiogec/bank-api/models"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 
@@ -26,5 +28,14 @@ func (server *Server) Initialize(DbUser, DbPassword, DbPort, DbHost, DbName stri
 		log.Fatal("This is the error:", err)
 	}
 
+	server.DB.Debug().AutoMigrate(&models.Account{})
+
 	server.Router = mux.NewRouter()
+
+	server.initializeRoutes()
+}
+
+func (server *Server) Run(addr string) {
+	fmt.Println("Listening to port 8080")
+	log.Fatal(http.ListenAndServe(addr, server.Router))
 }
