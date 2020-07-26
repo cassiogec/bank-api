@@ -9,4 +9,5 @@ func (s *Server) initializeRoutes() {
 
 	//Accounts routes
 	s.Router.HandleFunc("/accounts", middlewares.SetMiddlewareJSON(s.AllAccounts)).Methods("GET")
+	s.Router.HandleFunc("/accounts/{account_id}/balance", middlewares.SetMiddlewareJSON(s.AccountBalance)).Methods("GET")
 }
