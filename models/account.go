@@ -169,3 +169,25 @@ func Hash(secret string) ([]byte, error) {
 func VerifySecret(hashedSecret, secret string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedSecret), []byte(secret))
 }
+
+func (a *Account) WithdrawFromBalance(db *gorm.DB, amount float64) error {
+	newBalance := a.Balance - amount
+	return a.UpdateBalance(db, newBalance)
+}
+
+func (a *Account) DepositOnBalance(db *gorm.DB, amount float64) error {
+	newBalance := a.Balance + amount
+	return a.UpdateBalance(db, newBalance)
+}
+
+func (a *Account) UpdateBalance(db *gorm.DB, balance float64) error {
+	db = db.Debug().Model(&Account{}).Where("id = ?", a.ID).Take(&a).UpdateColumns(
+		map[string]interface{}{
+			"balance": balance,
+		},
+	)
+	if db.Error != nil {
+		return db.Error
+	}
+	return nil
+}
