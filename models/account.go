@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type Account struct {
@@ -150,4 +151,17 @@ func (a *Account) FindAccountByCPF(db *gorm.DB, cpf string) (*Account, error) {
 		return &Account{}, err
 	}
 	return a, nil
+}
+
+func (a *Account) BeforeSave() error {
+	hashedSecret, err := Hash(a.Secret)
+	if err != nil {
+		return err
+	}
+	a.Secret = string(hashedSecret)
+	return nil
+}
+
+func Hash(secret string) ([]byte, error) {
+	return bcrypt.GenerateFromPassword([]byte(secret), bcrypt.DefaultCost)
 }
