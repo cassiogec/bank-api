@@ -12,7 +12,7 @@ import (
 )
 
 type Account struct {
-	ID        uint32    `gorm:"primary_key;auto_increment" json:"id"`
+	ID        uint64    `gorm:"primary_key;auto_increment" json:"id"`
 	Name      string    `gorm:"size:255;not null;" json:"name"`
 	CPF       string    `gorm:"size:11; not null;unique" json:"cpf"`
 	Secret    string    `gorm:"size:100;not null;" json:"secret"`
