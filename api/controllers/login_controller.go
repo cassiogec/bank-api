@@ -5,9 +5,9 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/cassiogec/bank-api/auth"
-	"github.com/cassiogec/bank-api/models"
-	"github.com/cassiogec/bank-api/responses"
+	"github.com/cassiogec/bank-api/api/auth"
+	"github.com/cassiogec/bank-api/api/models"
+	"github.com/cassiogec/bank-api/api/responses"
 	"golang.org/x/crypto/bcrypt"
 )
 

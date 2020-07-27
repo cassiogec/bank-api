@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/cassiogec/bank-api/models"
-	"github.com/cassiogec/bank-api/responses"
+	"github.com/cassiogec/bank-api/api/models"
+	"github.com/cassiogec/bank-api/api/responses"
 	"github.com/gorilla/mux"
 )
 

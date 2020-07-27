@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/cassiogec/bank-api/models"
+	"github.com/cassiogec/bank-api/api/models"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 

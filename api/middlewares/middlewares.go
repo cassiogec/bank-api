@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/cassiogec/bank-api/auth"
-	"github.com/cassiogec/bank-api/responses"
+	"github.com/cassiogec/bank-api/api/auth"
+	"github.com/cassiogec/bank-api/api/responses"
 )
 
 func SetMiddlewareJSON(next http.HandlerFunc) http.HandlerFunc {

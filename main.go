@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/cassiogec/bank-api/controllers"
+	"github.com/cassiogec/bank-api/api/controllers"
 	"github.com/joho/godotenv"
 )
 

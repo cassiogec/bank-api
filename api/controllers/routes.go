@@ -1,6 +1,6 @@
 package controllers
 
-import "github.com/cassiogec/bank-api/middlewares"
+import "github.com/cassiogec/bank-api/api/middlewares"
 
 func (s *Server) initializeRoutes() {
 

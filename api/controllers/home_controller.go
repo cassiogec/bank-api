@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/cassiogec/bank-api/responses"
+	"github.com/cassiogec/bank-api/api/responses"
 )
 
 type Message struct {
