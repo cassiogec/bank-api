@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
 
@@ -27,7 +28,7 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 	account.Prepare()
 	err = account.Validate("login")
 	if err != nil {
-		responses.ERROR(w, http.StatusBadRequest, err)
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 	token, err := server.SignIn(account.CPF, account.Secret)
@@ -50,7 +51,7 @@ func (server *Server) SignIn(cpf string, secret string) (string, error) {
 	}
 	err = models.VerifySecret(account.Secret, secret)
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
-		return "", err
+		return "", errors.New("Incorrect Secret")
 	}
 	return auth.CreateToken(account.ID)
 }

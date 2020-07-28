@@ -32,7 +32,7 @@ func (server *Server) AccountBalance(w http.ResponseWriter, r *http.Request) {
 	account := models.Account{}
 	balance, err := account.FindAccountBalanceByID(server.DB, uint64(id))
 	if err != nil {
-		responses.ERROR(w, http.StatusBadRequest, err)
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 	responses.JSON(w, http.StatusOK, balance)
@@ -52,7 +52,7 @@ func (server *Server) NewAccount(w http.ResponseWriter, r *http.Request) {
 	account.Prepare()
 	err = account.Validate("")
 	if err != nil {
-		responses.ERROR(w, http.StatusBadRequest, err)
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 	accountCreated, err := account.SaveAccount(server.DB)
