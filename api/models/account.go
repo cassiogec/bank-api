@@ -11,6 +11,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type Balance struct {
+	Balance float64 `json:account_balance`
+}
+
 type Account struct {
 	ID        uint64    `gorm:"primary_key;auto_increment" json:"id"`
 	Name      string    `gorm:"size:255;not null;" json:"name"`
@@ -31,12 +35,13 @@ func (a *Account) FindAllAccounts(db *gorm.DB) (*[]Account, error) {
 	return &accounts, err
 }
 
-func (a *Account) FindAccountBalanceByID(db *gorm.DB, id uint64) (float64, error) {
+func (a *Account) FindAccountBalanceByID(db *gorm.DB, id uint64) (*Balance, error) {
 	a, err := a.FindAccountByID(db, id)
 	if err != nil {
-		return 0, err
+		return &Balance{}, err
 	}
-	return a.Balance, nil
+	balance := Balance{Balance: a.Balance}
+	return &balance, nil
 }
 
 func (a *Account) FindAccountByID(db *gorm.DB, id uint64) (*Account, error) {
@@ -139,7 +144,7 @@ func (a *Account) SaveAccount(db *gorm.DB) (*Account, error) {
 func (a *Account) ValidateUniqueCPF(db *gorm.DB) error {
 	accountFound, _ := a.FindAccountByCPF(db, a.CPF)
 	if accountFound.ID != 0 {
-		return errors.New("There is already an account with the given CPF")
+		return errors.New("CPF Already Taken")
 	}
 	return nil
 }
