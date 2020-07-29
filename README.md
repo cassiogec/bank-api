@@ -150,7 +150,7 @@ Required Body Data Example:
    "amount":7.5
 }
 ```
-PS: It isn't necessary to send the Account Origin ID because it will be used the one hashed in the token. <br>
+PS: It isn't necessary to send the Account Origin ID because it will be used the one hashed in the authorization token. <br>
 
 Returned Data Example:
 ```json
