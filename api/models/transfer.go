@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"math"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -42,6 +43,7 @@ func (t *Transfer) Prepare(account_origin_id uint64) {
 	t.Account_origin = Account{}
 	t.Account_destination = Account{}
 	t.CreatedAt = time.Now()
+	t.Amount = math.Round(t.Amount*100) / 100
 }
 
 func (t *Transfer) Validate(db *gorm.DB) error {
@@ -51,7 +53,7 @@ func (t *Transfer) Validate(db *gorm.DB) error {
 	if t.Account_destination_id == t.Account_origin_id {
 		return errors.New("Origin and Destination Accouts should differ")
 	}
-	if t.Amount < 1 {
+	if t.Amount <= 0.0 {
 		return errors.New("Amount should be bigger then 0")
 	}
 	if _, err := t.Account_destination.FindAccountByID(db, t.Account_destination_id); err != nil {

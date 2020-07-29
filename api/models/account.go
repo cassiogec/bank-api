@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"html"
+	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -188,7 +189,7 @@ func (a *Account) DepositOnBalance(db *gorm.DB, amount float64) error {
 func (a *Account) UpdateBalance(db *gorm.DB, balance float64) error {
 	db = db.Debug().Model(&Account{}).Where("id = ?", a.ID).Take(&a).UpdateColumns(
 		map[string]interface{}{
-			"balance": balance,
+			"balance": math.Round(balance*100) / 100,
 		},
 	)
 	if db.Error != nil {
