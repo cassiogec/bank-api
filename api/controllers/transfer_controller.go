@@ -13,10 +13,14 @@ import (
 )
 
 func (server *Server) AllTransfers(w http.ResponseWriter, r *http.Request) {
-
+	id, err := auth.ExtractTokenID(r)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+		return
+	}
 	transfer := models.Transfer{}
 
-	transfers, err := transfer.FindAllTransfers(server.DB)
+	transfers, err := transfer.FindAllTransfersById(server.DB, id)
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
@@ -44,7 +48,7 @@ func (server *Server) NewTransfer(w http.ResponseWriter, r *http.Request) {
 	transfer.Prepare(id)
 	err = transfer.Validate(server.DB)
 	if err != nil {
-		responses.ERROR(w, http.StatusBadRequest, err)
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 

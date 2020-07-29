@@ -17,10 +17,10 @@ type Transfer struct {
 	CreatedAt              time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 }
 
-func (t *Transfer) FindAllTransfers(db *gorm.DB) (*[]Transfer, error) {
+func (t *Transfer) FindAllTransfersById(db *gorm.DB, account_id uint64) (*[]Transfer, error) {
 	var err error
 	transfers := []Transfer{}
-	err = db.Debug().Model(&Transfer{}).Preload("Account_origin").Preload("Account_destination").Limit(100).Find(&transfers).Error
+	err = db.Debug().Model(&Transfer{}).Preload("Account_origin").Preload("Account_destination").Where("account_origin_id = ? OR account_destination_id = ?", account_id, account_id).Find(&transfers).Error
 	if err != nil {
 		return &[]Transfer{}, err
 	}
