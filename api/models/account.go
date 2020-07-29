@@ -12,7 +12,7 @@ import (
 )
 
 type Balance struct {
-	Balance float64 `json:account_balance`
+	Balance float64 `json:"account_balance"`
 }
 
 type Account struct {
