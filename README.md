@@ -26,8 +26,8 @@ This resource has the following attributes:
 * `id`
 * `name` 
 * `cpf`
-* `secret` //It will always be empty because the hash created will be cleared before the return
-* `balance` 
+* `secret` - It will always be empty because the hash created will be cleared before the return
+* `balance` - It has the default value of 10
 * `created_at` 
 
 The following routes are accepted:
