@@ -101,6 +101,13 @@ Returned Data Example:
 ```
 
 ### `/transfers`
+In this resource you need to send the token returned in the login resource. It will have to be sent in the header of the HTTP Request in the Authorization field or in the URL of the request.<br>
+Example:
+* HTTP Header: `Authorization=token: YOUR_TOKEN`
+* URL: `http://127.0.0.1:8080/transfers?token=YOUR_TOKEN`<br>
+
+PS: It isn't necessary to send the Account ID for the request paths because it will be used the one hashed in the authorization token. <br>
+
 This resource has the following attributes:
 * `id`
 * `account_origin_id` 
@@ -141,10 +148,6 @@ Returned Data Example:
 
 #### `POST /transfers`
 It will return an array with all the register transfers. <br>
-* Token: It will have to be sent in the header of the HTTP Request in the Authorization field or in the URL of the request.<br>
-Example:
-* HTTP Header: `Authorization=token: YOUR_TOKEN`
-* URL: `http://127.0.0.1:8080/transfers?token=YOUR_TOKEN`<br>
 Required Body Data Example:
 ```json
 {
@@ -152,7 +155,6 @@ Required Body Data Example:
    "amount":7.5
 }
 ```
-PS: It isn't necessary to send the Account Origin ID because it will be used the one hashed in the authorization token. <br>
 
 Returned Data Example:
 ```json
