@@ -8,13 +8,15 @@ import (
 	"github.com/cassiogec/bank-api/api/models"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
+	"github.com/urfave/negroni"
 
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 type Server struct {
-	DB     *gorm.DB
-	Router *mux.Router
+	DB      *gorm.DB
+	Router  *mux.Router
+	Handler *negroni.Negroni
 }
 
 func (server *Server) Initialize(DbUser, DbPassword, DbPort, DbHost, DbName string) {
@@ -37,5 +39,5 @@ func (server *Server) Initialize(DbUser, DbPassword, DbPort, DbHost, DbName stri
 
 func (server *Server) Run(addr string) {
 	fmt.Println("Listening to port 8080")
-	log.Fatal(http.ListenAndServe(addr, server.Router))
+	log.Fatal(http.ListenAndServe(addr, server.Handler))
 }

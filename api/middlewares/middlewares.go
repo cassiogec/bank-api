@@ -8,20 +8,16 @@ import (
 	"github.com/cassiogec/bank-api/api/responses"
 )
 
-func SetMiddlewareJSON(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		next(w, r)
-	}
+func JSON(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	rw.Header().Set("Content-Type", "application/json")
+	next(rw, r)
 }
 
-func SetMiddlewareAuthentication(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		err := auth.TokenValid(r)
-		if err != nil {
-			responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
-			return
-		}
-		next(w, r)
+func Authentication(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	err := auth.TokenValid(r)
+	if err != nil {
+		responses.ERROR(rw, http.StatusUnauthorized, errors.New("Unauthorized"))
+		return
 	}
+	next(rw, r)
 }
