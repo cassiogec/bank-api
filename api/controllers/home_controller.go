@@ -7,7 +7,7 @@ import (
 )
 
 type Message struct {
-	Message string `json:message`
+	Message string `json:"message"`
 }
 
 func (server *Server) Home(w http.ResponseWriter, r *http.Request) {
