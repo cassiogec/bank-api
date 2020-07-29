@@ -10,7 +10,7 @@ The code was developed using Go and PostgreSQL, and both of them are running ins
 ## Routes
 ### `/`
 #### `GET /`
-Hello Message
+Hello Message <br>
 Returned Data Example:
 ```json
 {
@@ -31,7 +31,7 @@ This resource has the following attributes:
 The following routes are accepted:
 
 #### `GET /accounts`
-It will return an array with all the register accounts
+It will return an array with all the register accounts. <br>
 Returned Data Example:
 ```json
 [
@@ -47,7 +47,7 @@ Returned Data Example:
 ```
 
 #### `GET /accounts/{account_id}/balance`
-It will return a JSON with the balance of the account passed as a parameter.
+It will return a JSON with the balance of the account passed as a parameter. <br>
 Returned Data Example:
 ```json
 {
@@ -56,7 +56,7 @@ Returned Data Example:
 ```
 
 #### `POST /accounts`
-It will create a new account.
+It will create a new account. <br>
 Required Body Data Example:
 ```json
 {
@@ -150,7 +150,7 @@ Required Body Data Example:
    "amount":7.5
 }
 ```
-PS: It isn't necessary to send the Account Origin ID because it will be used the one hashed in the token
+PS: It isn't necessary to send the Account Origin ID because it will be used the one hashed in the token. <br>
 
 Returned Data Example:
 ```json
