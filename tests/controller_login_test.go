@@ -43,7 +43,7 @@ func TestSignIn(t *testing.T) {
 		{
 			cpf:          "Wrong CPF",
 			secret:       "secret",
-			errorMessage: "record not found",
+			errorMessage: "Account Not Found",
 		},
 	}
 

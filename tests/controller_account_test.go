@@ -162,7 +162,7 @@ func TestFindAccountBalanceByID(t *testing.T) {
 		assert.Equal(t, rr.Code, v.statusCode)
 
 		if v.statusCode == 200 {
-			assert.Equal(t, account.Balance, responseMap["Balance"])
+			assert.Equal(t, account.Balance, responseMap["account_balance"])
 		}
 	}
 }
