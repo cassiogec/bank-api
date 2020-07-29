@@ -28,7 +28,7 @@ func (server *Server) Initialize(DbUser, DbPassword, DbPort, DbHost, DbName stri
 		log.Fatal("This is the error:", err)
 	}
 
-	server.DB.Debug().AutoMigrate(&models.Account{})
+	server.DB.Debug().AutoMigrate(&models.Account{}, &models.Transfer{})
 
 	server.Router = mux.NewRouter()
 
