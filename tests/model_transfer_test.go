@@ -8,17 +8,17 @@ import (
 	"gopkg.in/go-playground/assert.v1"
 )
 
-func TestFindAllTransfers(t *testing.T) {
+func TestFindAllTransfersById(t *testing.T) {
 
 	err := refreshAccountAndTransferTable()
 	if err != nil {
 		log.Fatalf("Error refreshing account and transfer table %v\n", err)
 	}
-	_, _, err = seedAccountsAndTransfers()
+	accounts, _, err := seedAccountsAndTransfers()
 	if err != nil {
 		log.Fatalf("Error seeding account and transfer table %v\n", err)
 	}
-	transfers, err := transferInstance.FindAllTransfers(server.DB)
+	transfers, err := transferInstance.FindAllTransfersById(server.DB, accounts[0].ID)
 	if err != nil {
 		t.Errorf("this is the error getting the transfers: %v\n", err)
 		return

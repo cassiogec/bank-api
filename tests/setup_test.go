@@ -80,14 +80,16 @@ func seedOneAccount() (models.Account, error) {
 func seedAccounts() ([]models.Account, error) {
 	accounts := []models.Account{
 		models.Account{
-			Name:   "Tom Baker",
-			CPF:    "22222222222",
-			Secret: "doctor4",
+			Name:    "Tom Baker",
+			CPF:     "22222222222",
+			Secret:  "doctor4",
+			Balance: 10,
 		},
 		models.Account{
-			Name:   "Matt Smith",
-			CPF:    "33333333333",
-			Secret: "doctor11",
+			Name:    "Matt Smith",
+			CPF:     "33333333333",
+			Secret:  "doctor11",
+			Balance: 10,
 		},
 	}
 
@@ -95,6 +97,7 @@ func seedAccounts() ([]models.Account, error) {
 	for i, account := range accounts {
 		err := server.DB.Model(&models.Account{}).Create(&account).Error
 		newAccounts[i] = account
+		newAccounts[i].Secret = accounts[i].Secret //replacing the hash for the plain secret
 		if err != nil {
 			return []models.Account{}, err
 		}
@@ -137,10 +140,12 @@ func seedAccountsAndTransfers() ([]models.Account, []models.Transfer, error) {
 	}
 
 	for i, _ := range accounts {
+		secret := accounts[i].Secret
 		err = server.DB.Model(&models.Account{}).Create(&accounts[i]).Error
 		if err != nil {
 			log.Fatalf("cannot seed accounts table: %v", err)
 		}
+		accounts[i].Secret = secret
 	}
 
 	var transfers = []models.Transfer{

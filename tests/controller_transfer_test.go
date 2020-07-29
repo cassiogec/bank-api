@@ -14,7 +14,7 @@ import (
 	"gopkg.in/go-playground/assert.v1"
 )
 
-func SaveTransfer(t *testing.T) {
+func TestNewTransfer(t *testing.T) {
 
 	err := refreshAccountAndTransferTable()
 	if err != nil {
@@ -24,11 +24,10 @@ func SaveTransfer(t *testing.T) {
 	if err != nil {
 		log.Fatalf("Cannot seed accounts %v\n", err)
 	}
-	token, err := server.SignIn(accounts[0].CPF, "secret")
+	token, err := server.SignIn(accounts[0].CPF, accounts[0].Secret)
 	if err != nil {
 		log.Fatalf("cannot login: %v\n", err)
 	}
-	tokenString := fmt.Sprintf("Bearer %v", token)
 
 	samples := []struct {
 		inputJSON              string
@@ -40,48 +39,48 @@ func SaveTransfer(t *testing.T) {
 		errorMessage           string
 	}{
 		{
-			inputJSON:              `{"account_destination_id": ` + strconv.FormatUint(accounts[1].ID, 10) + `, "amount": "3.5"}`,
+			inputJSON:              `{"account_destination_id": ` + strconv.FormatUint(accounts[1].ID, 10) + `, "amount": 3.5}`,
 			statusCode:             201,
-			tokenGiven:             tokenString,
+			tokenGiven:             token.Token,
 			account_origin_id:      accounts[0].ID,
 			account_destination_id: accounts[1].ID,
 			amount:                 3.5,
 			errorMessage:           "",
 		},
 		{
-			inputJSON:    `{"account_destination_id": ` + strconv.FormatUint(accounts[1].ID, 10) + `, "amount": "3.5"}`,
+			inputJSON:    `{"account_destination_id": ` + strconv.FormatUint(accounts[1].ID, 10) + `, "amount": 3.5}`,
 			statusCode:   401,
 			tokenGiven:   "",
 			errorMessage: "Unauthorized",
 		},
 		{
-			inputJSON:    `{"account_destination_id": ` + strconv.FormatUint(accounts[1].ID, 10) + `, "amount": "3.5"}`,
+			inputJSON:    `{"account_destination_id": ` + strconv.FormatUint(accounts[1].ID, 10) + `, "amount": 3.5}`,
 			statusCode:   401,
 			tokenGiven:   "This is an incorrect token",
 			errorMessage: "Unauthorized",
 		},
 		{
-			inputJSON:    `{"account_destination_id": "", "amount": "3.5"}`,
+			inputJSON:    `{"amount": 3.5}`,
 			statusCode:   422,
-			tokenGiven:   tokenString,
+			tokenGiven:   token.Token,
 			errorMessage: "Required Account Destination ID",
 		},
 		{
-			inputJSON:    `{"account_destination_id": ` + strconv.FormatUint(accounts[0].ID, 10) + `, "amount": "3.5"}`,
+			inputJSON:    `{"account_destination_id": ` + strconv.FormatUint(accounts[0].ID, 10) + `, "amount": 3.5}`,
 			statusCode:   422,
-			tokenGiven:   tokenString,
+			tokenGiven:   token.Token,
 			errorMessage: "Origin and Destination Accouts should differ",
 		},
 		{
-			inputJSON:    `{"account_destination_id": ` + strconv.FormatUint(accounts[1].ID, 10) + `, "amount": "1000000000"}`,
+			inputJSON:    `{"account_destination_id": ` + strconv.FormatUint(accounts[1].ID, 10) + `, "amount": 1000000000}`,
 			statusCode:   422,
-			tokenGiven:   tokenString,
+			tokenGiven:   token.Token,
 			errorMessage: "Insufficient balance",
 		},
 		{
-			inputJSON:    `{"account_destination_id": ` + strconv.FormatUint(accounts[1].ID, 10) + `, "amount": "-3.5"}`,
+			inputJSON:    `{"account_destination_id": ` + strconv.FormatUint(accounts[1].ID, 10) + `, "amount": -3.5}`,
 			statusCode:   422,
-			tokenGiven:   tokenString,
+			tokenGiven:   token.Token,
 			errorMessage: "Amount should be bigger then 0",
 		},
 	}
@@ -94,7 +93,7 @@ func SaveTransfer(t *testing.T) {
 		rr := httptest.NewRecorder()
 		handler := http.HandlerFunc(server.NewTransfer)
 
-		req.Header.Set("Authorization", v.tokenGiven)
+		req.Header.Set("Authorization", "token: "+v.tokenGiven)
 		handler.ServeHTTP(rr, req)
 
 		responseMap := make(map[string]interface{})
@@ -104,8 +103,8 @@ func SaveTransfer(t *testing.T) {
 		}
 		assert.Equal(t, rr.Code, v.statusCode)
 		if v.statusCode == 201 {
-			assert.Equal(t, responseMap["account_origin_id"], v.account_origin_id)
-			assert.Equal(t, responseMap["account_destination_id"], v.account_destination_id)
+			assert.Equal(t, responseMap["account_origin_id"], float64(v.account_origin_id))           //the response id is float64
+			assert.Equal(t, responseMap["account_destination_id"], float64(v.account_destination_id)) //the response id is float64
 			assert.Equal(t, responseMap["amount"], v.amount)
 		}
 		if v.statusCode == 401 || v.statusCode == 422 || v.statusCode == 500 && v.errorMessage != "" {
@@ -114,21 +113,27 @@ func SaveTransfer(t *testing.T) {
 	}
 }
 
-func TestGetTransfers(t *testing.T) {
+func TestAllTransfers(t *testing.T) {
 
 	err := refreshAccountAndTransferTable()
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, _, err = seedAccountsAndTransfers()
+	accounts, _, err := seedAccountsAndTransfers()
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	token, err := server.SignIn(accounts[0].CPF, accounts[0].Secret)
+	if err != nil {
+		log.Fatalf("cannot login: %v\n", accounts[0].Secret)
 	}
 
 	req, err := http.NewRequest("GET", "/transfers", nil)
 	if err != nil {
 		t.Errorf("this is the error: %v\n", err)
 	}
+	req.Header.Set("Authorization", "token: "+token.Token)
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(server.AllTransfers)
 	handler.ServeHTTP(rr, req)
