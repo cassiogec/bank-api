@@ -24,7 +24,7 @@ This resource has the following attributes:
 * `id`
 * `name` 
 * `cpf`
-* `secret`
+* `secret` //It will always be empty because the hash created will be cleared before the return
 * `balance` 
 * `created_at` 
 
@@ -39,7 +39,7 @@ Returned Data Example:
       "id":1,
       "name":"David Tennant",
       "cpf":"11111111111",
-      "secret":"", //It will always be empty because the hash created will be cleared before the return
+      "secret":"",
       "balance":10,
       "created_at":"2020-01-01T00:00"
    }
@@ -114,7 +114,7 @@ Returned Data Example:
    {
       "id":1,
       "account_origin_id":1,
-      "account_origin":{ //All the data from the Origin Account
+      "account_origin":{
          "id":1,
          "name":"David Tennant",
          "cpf":"11111111111",
@@ -123,7 +123,7 @@ Returned Data Example:
          "created_at":"2020-01-01T00:00"
       },
       "account_destination_id":2,
-      "account_destination":{ //All the data from the Destination Account
+      "account_destination":{
          "id":2,
          "name":"Tom Baker",
          "cpf":"22222222222",
