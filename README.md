@@ -5,7 +5,9 @@ This is a small and limited Bank API developed using Go. This API was created wi
 ## Run
 The code was developed using Go and PostgreSQL, and both of them are running inside docker containers that can be initialized using `docker-compose` with the following code:<br>
 * Production: `docker-compose up`
-* Tests: `docker-compose -f docker-compose.test.yml up`
+* Tests: `docker-compose -f docker-compose.test.yml up`<br>
+
+Once you have the dockers running, you can call the API through the path `http://127.0.0.1:8080`
 
 ## Routes
 ### `/`
