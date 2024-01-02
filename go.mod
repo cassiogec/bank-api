@@ -9,6 +9,6 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.3 // indirect
 	github.com/urfave/negroni v1.0.0
-	golang.org/x/crypto v0.8.0
+	golang.org/x/crypto v0.17.0
 	gopkg.in/go-playground/assert.v1 v1.2.1
 )
