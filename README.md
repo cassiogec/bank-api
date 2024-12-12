@@ -3,9 +3,9 @@
 This is a small and limited Bank API developed using Go. This API was created with one of the purposes being the study of the language, and for that reason, some of the code in here may not be organized correctly and it may not be in the correct Go standard.
 
 ## Run
-The code was developed using Go and PostgreSQL, and both of them are running inside docker containers that can be initialized using `docker-compose` with the following code:<br>
-* Production: `docker-compose up`
-* Tests: `docker-compose -f docker-compose.test.yml up`<br>
+The code was developed using Go and PostgreSQL, and both of them are running inside docker containers that can be initialized using `docker compose` with the following code:<br>
+* Production: `docker compose up`
+* Tests: `docker compose -f docker-compose-test.yml up`<br>
 
 Once you have the dockers running, you can call the API through the path `http://127.0.0.1:8080`
 
@@ -24,11 +24,11 @@ Returned Data Example:
 
 This resource has the following attributes:
 * `id`
-* `name` 
+* `name`
 * `cpf`
 * `secret` - It will always be empty because the hash created will be cleared before the return
 * `balance` - It has the default value of 10
-* `created_at` 
+* `created_at`
 
 The following routes are accepted:
 
@@ -110,14 +110,14 @@ PS: It isn't necessary to send the Account ID for the request paths because it w
 
 This resource has the following attributes:
 * `id`
-* `account_origin_id` 
+* `account_origin_id`
 * `account_destination_id`
 * `amount`
 * `created_at`
 
 #### `GET /transfers`
 It will return an array with all the register tranfers. <br>
-Returned Data Example: 
+Returned Data Example:
 ```json
 [
    {
