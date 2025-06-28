@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	jwt "github.com/golang-jwt/jwt"
+	jwt "github.com/golang-jwt/jwt/v5"
 )
 
 type Token struct {
