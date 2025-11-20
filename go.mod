@@ -8,7 +8,7 @@ require (
 	github.com/jinzhu/gorm v1.9.16
 	github.com/joho/godotenv v1.5.1
 	github.com/urfave/negroni v1.0.0
-	golang.org/x/crypto v0.41.0
+	golang.org/x/crypto v0.45.0
 	gopkg.in/go-playground/assert.v1 v1.2.1
 )
 
